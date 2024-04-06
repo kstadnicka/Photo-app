@@ -1,6 +1,10 @@
 package org.kamilastd.Entity;
 
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
 public enum SessionTypeEntity {
     BABY("Nowordkowa", 10, 700),
     PREGNANT("Ciążowa", 10, 500),
@@ -21,24 +25,12 @@ public enum SessionTypeEntity {
         this.price = price;
     }
 
-    public String getType() {
-        return type;
-    }
-
     public void setType(String type) {
         this.type = type;
     }
 
-    public int getAmount() {
-        return amount;
-    }
-
     public void setAmount(int amount) {
         this.amount = amount;
-    }
-
-    public double getPrice() {
-        return price;
     }
 
     public void setPrice(double price) {
