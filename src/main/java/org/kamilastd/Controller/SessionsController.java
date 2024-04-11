@@ -25,7 +25,6 @@ public class SessionsController {
         PhotoSessionService photoSessionService = new PhotoSessionService();
        return photoSessionService.prepareDataForPhotoSessionDTS(photoSession);
     }
-
     // Get from front single PhotoSessionDTS to create new
 
 }

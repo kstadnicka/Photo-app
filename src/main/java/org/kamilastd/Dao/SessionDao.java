@@ -8,4 +8,9 @@ public class SessionDao {
     public Long updateSessionWhereId(PhotoSessionEntity photoSession){
         return photoSession.getId();
     }
+
+    public Long findSessionWithHighestId() {
+        //Looking database
+        return 5L;
+    }
 }

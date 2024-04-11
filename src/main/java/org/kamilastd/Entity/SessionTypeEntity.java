@@ -2,6 +2,8 @@ package org.kamilastd.Entity;
 
 
 import lombok.Getter;
+import lombok.Setter;
+
 
 
 @Getter
@@ -25,15 +27,4 @@ public enum SessionTypeEntity {
         this.price = price;
     }
 
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public void setPrice(double price) {
-        this.price = price;
-    }
 }
