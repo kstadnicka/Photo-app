@@ -13,7 +13,7 @@ public class ClientService {
     ClientEntity clientEntity;
 
     public ClientEntity createNewClient(String firstName, String lastName, String email, Long phoneNumber) {
-        Long newClientId = clientDao.findClientWithHighestId();
+        Long newClientId = clientDao.findClientWithHighestId() + 1;
         return new ClientEntity(newClientId, firstName, lastName, email, phoneNumber);
     }
 

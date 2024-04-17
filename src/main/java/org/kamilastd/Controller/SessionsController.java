@@ -17,14 +17,20 @@ public class SessionsController {
 
     public PhotoSessionDTS displaySingleSessionsToUpdate(PhotoSessionEntity photoSessionEntity){
         photoSessionService = new PhotoSessionService();
+        photoSessionService.updateSession(photoSessionEntity);
         return photoSessionService.prepareListChangesOfSessionsDTS(photoSessionEntity);
     }
     // Get from front single PhotoSessionDTS to update
 
     public PhotoSessionDTS displaySingleSessionsToCreateNew(PhotoSessionEntity photoSession){
         PhotoSessionService photoSessionService = new PhotoSessionService();
+        photoSession = photoSessionService.createNewSession(photoSession.getClient(),photoSession.getSessionDate(),
+                photoSession.getSessionType(),photoSession.getPayment(),photoSession.getPhotos(),
+                photoSession.getIsContractFinished());
        return photoSessionService.prepareDataForPhotoSessionDTS(photoSession);
     }
     // Get from front single PhotoSessionDTS to create new
+
+
 
 }

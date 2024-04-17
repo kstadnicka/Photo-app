@@ -11,6 +11,7 @@ import java.util.List;
 
 public class PhotoSessionService {
     ClientDao clientDao;
+    SessionDao sessionDao;
 
     public List<PhotoSessionEntity> getAllPhotoSessionFromDatabase(){
         // do dao idziesz
@@ -38,7 +39,7 @@ public class PhotoSessionService {
         return list.stream().map(this::prepareDataForPhotoSessionDTS).sorted().toList();
     }
 
-  public PhotoSessionDTS prepareListChangesOfSessionsDTS(PhotoSessionEntity photoSession){
+    public PhotoSessionDTS prepareListChangesOfSessionsDTS(PhotoSessionEntity photoSession){
         SessionDao sessionDao = new SessionDao();
         long id = sessionDao.updateSessionWhereId(photoSession);
         photoSession.setId(id);
@@ -51,13 +52,18 @@ public class PhotoSessionService {
     public PhotoSessionEntity createNewSession(ClientEntity client, LocalDateTime sessionDate,
                                                      SessionTypeEntity sessionType, PaymentEntity payment,
                                                      PhotosEntity photos, Boolean isContractFinished){
-        clientDao = new ClientDao();
-        Long newClientId = clientDao.findClientWithHighestId();
-        return new PhotoSessionEntity(newClientId,client,sessionDate,sessionType,payment, photos, isContractFinished);
+        Long sessionId = sessionDao.findSessionWithHighestId() + 1;
+
+        return new PhotoSessionEntity(sessionId,client,sessionDate,sessionType,payment, photos, isContractFinished);
     }
 
 
 
+    public void updateSession(PhotoSessionEntity sessionEntity){
+        long id = sessionEntity.getId();
+        sessionEntity.setId(id);
+        prepareDataForPhotoSessionDTS(sessionEntity);
+    }
 
 
 }
