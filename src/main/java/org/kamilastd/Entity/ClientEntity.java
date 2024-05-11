@@ -1,11 +1,16 @@
 package org.kamilastd.Entity;
 
-public record ClientEntity (
-        Long id,
-        String firstName,
-        String lastName,
-        String email,
-        Long phoneNumber
-){
+import lombok.Data;
+
+@Data
+public class ClientEntity{
+    Long id;
+    String firstName;
+    String lastName;
+    String email;
+    Long phoneNumber;
+
+
+
 
 }

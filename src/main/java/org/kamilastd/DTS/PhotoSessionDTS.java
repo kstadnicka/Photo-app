@@ -1,12 +1,12 @@
 package org.kamilastd.DTS;
 
 import lombok.Data;
-import org.kamilastd.Dao.SessionDao;
 
 
 @Data
 
 public class PhotoSessionDTS {
+    ClientDTS clientDTS;
     Long sessionPhotoId;
     String sessionType;
     Boolean isDepositPaid;

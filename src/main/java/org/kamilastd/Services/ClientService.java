@@ -8,6 +8,7 @@ import org.kamilastd.Dao.SessionDao;
 import org.kamilastd.Entity.ClientEntity;
 import org.kamilastd.Entity.PhotoSessionEntity;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,67 +17,53 @@ public class ClientService {
     ClientDao clientDao;
     ClientEntity clientEntity;
 
-    public List<ClientEntity> getAllClientsFromDatabase() {
-        // do dao idziesz
-        // robisz sql query
-        // zwracasz calą liste albo np tylko przyszle
-        return new ArrayList<ClientEntity>();
+    public List<ClientEntity> getAllClientsFromDatabase() throws SQLException {
+       return clientDao.getAllClients();
     }
 
     public ClientDTS prepareDataForClientDTS(ClientEntity clientEntity){
 
         ClientDTS clientDTS = new ClientDTS();
-        clientDTS.setId(clientEntity.id());
-        clientDTS.setFirstName(clientEntity.firstName());
-        clientDTS.setLastName(clientEntity.lastName());
-        clientDTS.setPhoneNumber(clientEntity.phoneNumber());
-        clientDTS.setEmail(clientEntity.email());
+        clientDTS.setId(clientEntity.getId());
+        clientDTS.setFirstName(clientEntity.getFirstName());
+        clientDTS.setLastName(clientEntity.getLastName());
+        clientDTS.setPhoneNumber(clientEntity.getPhoneNumber());
+        clientDTS.setEmail(clientEntity.getEmail());
         return clientDTS;
     }
 
-    public List<ClientDTS> prepareListOfClientsDTS(){
+    public List<ClientDTS> prepareListOfClientsDTS() throws SQLException {
         List<ClientEntity> list = getAllClientsFromDatabase();
         return list.stream().map(this::prepareDataForClientDTS).sorted().toList();
     }
 
-    public ClientEntity createNewClient(String firstName, String lastName, String email, Long phoneNumber) {
-        Long newClientId = clientDao.findClientWithHighestId() + 1;
-        return new ClientEntity(newClientId, firstName, lastName, email, phoneNumber);
+    public ClientEntity createNewClient(ClientDTS clientDTS) throws SQLException {
+        ClientEntity client = prepareDataForClientEntity(clientDTS);
+        return clientDao.saveNewClient(client);
     }
 
-    public void updateClientDetails(ClientEntity clientEntity){
-        prepareDataForClientDTS(clientEntity);
+    public ClientEntity updateClientDetails(ClientDTS clientDTS) throws SQLException {
+        ClientEntity client = prepareDataForClientEntity(clientDTS);
+        return clientDao.updateClientWhereId(client);
     }
 
-    public ClientDTS prepareListChangesOfClientDTS(ClientEntity clientEntity){
-        clientDao.updateClientWhereId(clientEntity);
+    private ClientEntity prepareDataForClientEntity(ClientDTS clientDTS) {
+        ClientEntity clientEntity = new ClientEntity();
+        clientEntity.setFirstName(clientDTS.getFirstName());
+        clientEntity.setLastName(clientDTS.getLastName());
+        clientEntity.setPhoneNumber(clientDTS.getPhoneNumber());
+        clientEntity.setEmail(clientDTS.getEmail());
+        clientEntity.setId(clientDTS.getId());
+        return clientEntity;
+    }
+
+    public ClientDTS prepareListChangesOfClientDTS(ClientEntity clientEntity) throws SQLException {
+        clientEntity = clientDao.updateClientWhereId(clientEntity);
         return prepareDataForClientDTS(clientEntity);
     }
 
-    public List<ClientEntity> getAllClients(ClientEntity clientEntity) {
-       List<ClientEntity> allClients = new ArrayList<>();
-        for (int i = 0; i < 100; i++){
-            allClients.add(clientEntity);
-        }
-        return allClients;
+
+    public void deleteClient(ClientDTS clientDTS) throws SQLException {
+        clientDao.deleteClient(clientDTS.getId());
     }
-
-    public void getClientById(long id) {
-        if (id==0){
-            throw new NullPointerException();
-        }else if (id==clientEntity.id()){
-            System.out.println(clientEntity);
-        }
-    }
-
-    public void getClientByLastName(String lastName) {
-        if (lastName==null){
-            throw new NullPointerException();
-        }else if (lastName.equals(clientEntity.lastName())){
-            System.out.println(clientEntity);
-        }
-    }
-
-    //czy w client entyti dodac equals ?
-
 }

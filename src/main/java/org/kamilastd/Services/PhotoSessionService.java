@@ -5,19 +5,16 @@ import org.kamilastd.Dao.ClientDao;
 import org.kamilastd.Dao.SessionDao;
 import org.kamilastd.Entity.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.sql.SQLException;
 import java.util.List;
 
 public class PhotoSessionService {
     ClientDao clientDao;
     SessionDao sessionDao;
 
-    public List<PhotoSessionEntity> getAllPhotoSessionFromDatabase(){
-        // do dao idziesz
-        // robisz sql query
-        // zwracasz calą liste albo np tylko przyszle
-        return new ArrayList<PhotoSessionEntity>();
+    public List<PhotoSessionDTS> getAllPhotoSessionFromDatabase(){
+       List<PhotoSessionEntity> list =  sessionDao.getAllSessionFromDatabase();
+       return prepareListOfSessionsDTS(list);
     }
     public PhotoSessionDTS prepareDataForPhotoSessionDTS(PhotoSessionEntity photoSessionEntity){
 
@@ -34,8 +31,7 @@ public class PhotoSessionService {
         return photoSessionDTS;
     }
 
-    public List<PhotoSessionDTS> prepareListOfSessionsDTS(){
-        List<PhotoSessionEntity> list = getAllPhotoSessionFromDatabase();
+    public List<PhotoSessionDTS> prepareListOfSessionsDTS( List<PhotoSessionEntity> list){
         return list.stream().map(this::prepareDataForPhotoSessionDTS).sorted().toList();
     }
 
@@ -49,12 +45,19 @@ public class PhotoSessionService {
 
     // wziać sessionEntiy, to co się zmienilo podmienic przez set coś tam i znow zapisać zapisać do bazy danych.
 
-    public PhotoSessionEntity createNewSession(ClientEntity client, LocalDateTime sessionDate,
-                                                     SessionTypeEntity sessionType, PaymentEntity payment,
-                                                     PhotosEntity photos, Boolean isContractFinished){
-        Long sessionId = sessionDao.findSessionWithHighestId() + 1;
-
-        return new PhotoSessionEntity(sessionId,client,sessionDate,sessionType,payment, photos, isContractFinished);
+    public void createNewSession(PhotoSessionDTS photoSessionDTS) throws SQLException {
+        PhotoSessionEntity photoSessionEntity = new PhotoSessionEntity();
+        PaymentEntity payment = new PaymentEntity();
+        PhotosEntity photos = new PhotosEntity();
+        ClientEntity client = clientDao.getClientById(photoSessionDTS.getClientDTS().getId());
+        photoSessionEntity.setClient(client);
+        payment.setIsDepositPaid(photoSessionDTS.getIsDepositPaid());
+        payment.setIsBasePaid(photoSessionDTS.getIsBasePaid());
+        payment.setIsAdditionalPaid(photoSessionDTS.getIsAdditionalPaid());
+        photos.setIsPhotosSentToClientForChoose(photoSessionDTS.getIsPhotosSentToClientForChoose());
+        photos.setIsPhotosChosenByClient(photoSessionDTS.getIsPhotosChosenByClient());
+        photos.setIsAdditionalPhotosChosenByClient(photoSessionDTS.getIsAdditionalPhotosChosenByClient());
+     //   sessionDao.saveNewSession(photoSessionEntity);
     }
 
 
